@@ -16,10 +16,8 @@ import javax.faces.event.ActionEvent;
 @SessionScoped
 public class TodoBean implements Serializable {
     // TODO :: use plugin to generate
-    private static final long serialVersionUID = -2702091165206774335L;
+    private static final long serialVersionUID = 2764660107984440385L;
 
-    private           boolean         isControlColumn;
-    private           boolean         isDisplayDates;
     // TODO :: transient to prevent GF error
     private transient UIInput         newTodoText;
     private transient Todo            selectedTodo;
@@ -28,12 +26,10 @@ public class TodoBean implements Serializable {
     public TodoBean() {
         super();
 
-        isControlColumn = false;
-        isDisplayDates  = false;
         todoList        = new ArrayList<Todo>();
 
         newTodoText = new UIInput();
-        
+
         selectedTodo = null;
 
         //populate with some same data
@@ -47,12 +43,6 @@ public class TodoBean implements Serializable {
 
     public String doDelete() {
         return "index";
-    }
-
-    public String doToggleControlColumn() {
-        isControlColumn = ! isControlColumn;
-
-        return null;
     }
 
     public UIInput getNewTodoText() {
@@ -86,18 +76,6 @@ public class TodoBean implements Serializable {
         todoList.add( newTodo );
 
         newTodoText.setValue( "" );
-    }
-
-    public boolean isIsControlColumn() {
-        return isControlColumn;
-    }
-
-    public boolean isIsDisplayDates() {
-        return isDisplayDates;
-    }
-
-    public void setIsDisplayDates(boolean isDisplayDates) {
-        this.isDisplayDates = isDisplayDates;
     }
 
     public void setNewTodoText(UIInput newTodoText) {

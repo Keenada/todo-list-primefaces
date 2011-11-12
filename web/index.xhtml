@@ -16,11 +16,10 @@
     </h:head>
 
     <h:body>
+        <p:tabView>
 
-        <h:form id="todoForm">
-            
-            <p:tabView>
-                <p:tab title="Todo CRUDS">
+            <p:tab id="todosTabs" title="Todo CRUDS">
+                <h:form id="todoForm">
 
                     <!-- PANEL :: ADD NEW TODO -->
                     <p:panel id="newTodoPanel"
@@ -61,16 +60,6 @@
 
                         <!-- HEADER :: OPTIONS -->
                         <f:facet name="header">
-                            <!-- SHOW DATES -->
-                            <p:outputPanel>
-                                <h:outputLabel for="showDates"
-                                               value="Show Dates" />
-                                <h:selectBooleanCheckbox id="showDates"
-                                                         value="#{model.isDisplayDates}">
-                                    <p:ajax update="todoForm:todoList" />
-                                </h:selectBooleanCheckbox>
-                            </p:outputPanel>
-
                             <!-- GLOBAL SEARCH -->
                             <p:outputPanel>
                                 <h:outputLabel for="globalFilter"
@@ -83,22 +72,22 @@
 
                             <!-- TOGGLE CONTROL COLUMN -->
                             <p:outputPanel>
-                                <p:commandButton action="#{model.doToggleControlColumn()}"
+                                <p:commandButton action="#{options.doToggleControlColumn()}"
                                                  immediate="true"
                                                  image="ui-icon ui-icon-gear"
                                                  update="todoForm:todoList" />
                             </p:outputPanel>
-                        </f:facet> 
+                        </f:facet>
 
                         <!-- COLUMN :: CONTROL -->
-                        <p:column rendered="${model.isControlColumn}"
+                        <p:column rendered="${options.isControlColumn}"
                                   style="width: 10%">
                             <p:commandLink id="detailsDialogLink"
                                            immediate="true"
                                            oncomplete="detailsDialog.show();"
                                            styleClass="ui-icon ui-icon-search"
                                            title="Details Dialog"
-                                           update="todoForm:detailsTodo todoForm:detailsDateCreated todoForm:detailsDateModified">
+                                           update="detailsTodo detailsDateCreated detailsDateModified">
                                 <f:setPropertyActionListener value="#{todo}"
                                                              target="#{model.selectedTodo}" />
                             </p:commandLink>
@@ -121,7 +110,7 @@
                         <!-- COLUMN :: DATE CREATED -->
                         <p:column filterBy="#{todo.dateCreated}"
                                   headerText="Date Created"
-                                  rendered="${model.isDisplayDates}"
+                                  rendered="${options.isShowDates}"
                                   sortBy="#{todo.dateCreated}">
                             <h:outputText value="#{todo.dateCreated}">
                                 <f:convertDateTime pattern="EEE, MMM d, yyyy (h:mm a)"
@@ -133,7 +122,7 @@
                         <!-- COLUMN :: DATE MODIFIED -->
                         <p:column filterBy="#{todo.dateModified}"
                                   headerText="Last Date Modified"
-                                  rendered="${model.isDisplayDates}"
+                                  rendered="${options.isShowDates}"
                                   sortBy="#{todo.dateModified}">
                             <h:outputText value="#{todo.dateModified}">
                                 <f:convertDateTime pattern="EEE, MMM d, yyyy (h:mm a)"
@@ -151,7 +140,10 @@
                                     <h:outputText value="${todo.todo}" />
                                 </f:facet>
                                 <f:facet name="input">
-                                    <p:inputText value="#{todo.todo}" />
+                                    <p:inputText id="todo"
+                                                 required="true"
+                                                 value="#{todo.todo}">
+                                    </p:inputText>
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
@@ -162,72 +154,90 @@
                             <h:outputText value="${model.numberOfTodos}" />
                         </f:facet>
                     </p:dataTable>
+                </h:form>
+            </p:tab>
 
-                    <!-- DETAILS DIALOG -->
-                    <p:dialog header="Details Dialog"
-                              hideEffect="blink"
-                              modal="true"
-                              showEffect="blink"
-                              width="500"
-                              widgetVar="detailsDialog">
-                        <h:panelGrid id="todoDetails"
-                                     cellpadding="4"
-                                     columns="2"
-                                     width="100%">
-                            <h:outputLabel value="Todo:" />
-                            <h:outputText id="detailsTodo"
-                                          value="${model.selectedTodo.todo}" />
-                            <h:outputLabel value="Date Created:" />
-                            <h:outputText id="detailsDateCreated"
-                                          value="${model.selectedTodo.dateCreated}" />
-                            <h:outputLabel value="Date Modified:" />
-                            <h:outputText id="detailsDateModified"
-                                          value="${model.selectedTodo.dateModified}" />
-                        </h:panelGrid>
-                        <p:commandButton oncomplete="detailsDialog.hide();"
-                                         value="OK" />
-                    </p:dialog>
-                </p:tab>
+            <!-- TAB :: OPTIONS -->
+            <p:tab id="optionsTab" title="Options">
+                <h:form id="optionsForm">
+                    <h:panelGrid columns="1">
+                        <p:outputPanel>
+                            <!-- DATES -->
+                            <h:outputLabel for="showDates"
+                                           value="Show Dates" />
+                            <h:selectBooleanCheckbox id="showDates"
+                                                     value="#{options.isShowDates}">
+                                <p:ajax update="todoForm:todoList" />
+                            </h:selectBooleanCheckbox>
+                        </p:outputPanel>
+                    </h:panelGrid>
+                </h:form>
+            </p:tab>
 
-                <p:tab title="About">
-                    <ui:include src="about.xhtml" />
-                </p:tab>
+            <p:tab id="aboutTab" title="About">
+                <ui:include src="about.xhtml" />
+            </p:tab>
 
-                <p:tab title="Features">
-                    <h3>Behaviour</h3>
+            <p:tab id="featuresTab" title="Features">
+                <h3>Behaviour</h3>
+                <ul>
+                    <li>CRUDS:</li>
                     <ul>
-                        <li>CRUDS:</li>
-                        <ul>
-                            <li><b>C</b>reate a new todo</li>
-                            <li><b>R</b>ead and render (display) a list of todos</li>
-                            <li><b>U</b>pdate a todo</li>
-                            <li><b>D</b>elete a todo</li>
-                            <li><b>S</b>earch for a todo(s)</li>
-                        </ul>
-                        <li>column filtering</li>
-                        <li>column formatting</li>
-                        <li>column sorting</li>
-                        <li>dynamic columns</li>
-                        <li>global searching</li>
-                        <li>dataTable pagination</li>
-                        <li>targeted updates</li>
-                        <li>use of immediate attribute: p:commandButton to 
-                            toggle control column</li>
+                        <li><b>C</b>reate a new todo</li>
+                        <li><b>R</b>ead and render (display) a list of todos</li>
+                        <li><b>U</b>pdate a todo</li>
+                        <li><b>D</b>elete a todo</li>
+                        <li><b>S</b>earch for a todo(s)</li>
                     </ul>
-                    <h3>PrimeFaces Components</h3>
-                    <ul>
-                        <li>collector</li>
-                        <li>commandButton</li>
-                        <li>commandLink</li>
-                        <li>dataTable</li>
-                        <li>dialog</li>
-                        <li>rowEditor and cellEditor</li>
-                        <li>tabView and tab</li>
-                        <li>tooltip</li>
-                    </ul>
-                </p:tab>
+                    <li>column filtering</li>
+                    <li>column formatting</li>
+                    <li>column sorting</li>
+                    <li>dynamic columns</li>
+                    <li>global searching</li>
+                    <li>dataTable pagination</li>
+                    <li>targeted updates</li>
+                    <li>use of immediate attribute: p:commandButton to
+                        toggle control column</li>
+                </ul>
+                <h3>PrimeFaces Components</h3>
+                <ul>
+                    <li>collector</li>
+                    <li>commandButton</li>
+                    <li>commandLink</li>
+                    <li>dataTable</li>
+                    <li>dialog</li>
+                    <li>rowEditor and cellEditor</li>
+                    <li>tabView and tab</li>
+                    <li>tooltip</li>
+                </ul>
+            </p:tab>
+        </p:tabView>
 
-            </p:tabView>
-        </h:form>
+        <!-- DETAILS DIALOG -->
+        <p:dialog header="Details Dialog"
+                  hideEffect="blink"
+                  modal="true"
+                  showEffect="blink"
+                  width="500"
+                  widgetVar="detailsDialog">
+            <h:panelGrid id="todoDetails"
+                         cellpadding="4"
+                         columns="2"
+                         width="100%">
+                <h:outputLabel value="Todo:" />
+                <h:outputText id="detailsTodo"
+                              value="${model.selectedTodo.todo}" />
+                <h:outputLabel value="Date Created:" />
+                <h:outputText id="detailsDateCreated"
+                              value="${model.selectedTodo.dateCreated}" />
+                <h:outputLabel value="Date Modified:" />
+                <h:outputText id="detailsDateModified"
+                              value="${model.selectedTodo.dateModified}" />
+            </h:panelGrid>
+            <h:form>
+                <p:commandButton oncomplete="detailsDialog.hide();"
+                                 value="OK" />
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>

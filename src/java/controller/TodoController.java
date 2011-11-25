@@ -1,64 +1,61 @@
-package model;
+package controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIInput;
 import javax.faces.event.ActionEvent;
+import model.OptionsModel;
+import model.Todo;
+import model.TodoListModel;
 
 /**
- * Backing bean for todo list.
+ * Controller for a todo list.
  *
  * @author Gerald.Hurdle@AlgonquinCollege.com
  */
-@ManagedBean (name="model")
+@ManagedBean (name="controller")
 @SessionScoped
-public class TodoBean implements Serializable {
-    // TODO :: use plugin to generate
-    private static final long serialVersionUID = 2764660107984440385L;
+public class TodoController implements Serializable {
+    private static final long serialVersionUID = 4391946429563992152L;
 
+    private           TodoListModel model;
     // TODO :: transient to prevent GF error
-    private transient UIInput         newTodoText;
-    private transient Todo            selectedTodo;
-    private           ArrayList<Todo> todoList;
+    private transient UIInput       newTodoText;
+    private           OptionsModel  optionsModel;
+    // TODO :: transient to prevent GF error
+    private transient Todo          selectedTodo;
 
-    public TodoBean() {
+    public TodoController() {
         super();
 
-        todoList        = new ArrayList<Todo>();
+        model = new TodoListModel();
+        optionsModel = new OptionsModel();
 
         newTodoText = new UIInput();
-
         selectedTodo = null;
-
-        //populate with some same data
-        // TODO
-        //for (int i = 0; i < 20; i++) {
-            todoList.add(new Todo("Eat"));
-            todoList.add(new Todo("Sleep"));
-            todoList.add(new Todo("STUDY"));
-        //}
     }
 
-    public String doDelete() {
-        return "index";
+    public String doToggleControlColumn() {
+        optionsModel.toggleControlColumn();
+
+        return null;
+    }
+
+    public TodoListModel getModel() {
+        return model;
     }
 
     public UIInput getNewTodoText() {
         return newTodoText;
     }
 
-    public int getNumberOfTodos() {
-        return todoList.size();
+    public OptionsModel getOptionsModel() {
+        return optionsModel;
     }
 
     public Todo getSelectedTodo() {
         return selectedTodo;
-    }
-
-    public ArrayList<Todo> getTodoList() {
-        return todoList;
     }
 
     public void handleNewTodo( ActionEvent e ) {
@@ -73,7 +70,7 @@ public class TodoBean implements Serializable {
         Todo newTodo = new Todo( newTodoText.getValue().toString() );
 
         // SET Model to new state (i.e. append new todo)
-        todoList.add( newTodo );
+        model.append( newTodo );
 
         newTodoText.setValue( "" );
     }
@@ -82,7 +79,7 @@ public class TodoBean implements Serializable {
         this.newTodoText = newTodoText;
     }
 
-    public void setSelectedTodo(Todo selectedTodo) {
+    public void setSelectedTodo( Todo selectedTodo ) {
         this.selectedTodo = selectedTodo;
     }
 }

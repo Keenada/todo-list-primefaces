@@ -28,11 +28,11 @@
                             <h:outputLabel for="newTodoText"
                                            value="New Todo:" />
                             <h:inputText id="newTodoText"
-                                         binding="#{model.newTodoText}"
+                                         binding="#{controller.newTodoText}"
                                          immediate="true"
                                          required="true" />
 
-                            <p:commandButton actionListener="#{model.handleNewTodo}"
+                            <p:commandButton actionListener="#{controller.handleNewTodo}"
                                              immediate="true"
                                              value="Add Todo"
                                              update="todoForm todoForm:todoList todoForm:newTodoText" />
@@ -56,9 +56,9 @@
                                     {RowsPerPageDropdown}"
                                  rows="5"
                                  rowsPerPageTemplate="5,10,15"
-                                 selection="#{model.selectedTodo}"
+                                 selection="#{controller.selectedTodo}"
                                  selectionMode="single"
-                                 value="#{model.todoList}"
+                                 value="#{controller.model.todoList}"
                                  var="todo"
                                  widgetVar="todoTable">
 
@@ -76,7 +76,7 @@
 
                             <!-- TOGGLE CONTROL COLUMN -->
                             <p:outputPanel>
-                                <p:commandButton action="#{options.doToggleControlColumn()}"
+                                <p:commandButton action="#{controller.doToggleControlColumn()}"
                                                  immediate="true"
                                                  image="ui-icon ui-icon-gear"
                                                  update="todoForm:todoList" />
@@ -84,7 +84,7 @@
                         </f:facet>
 
                         <!-- COLUMN :: CONTROL -->
-                        <p:column rendered="${options.isControlColumn}"
+                        <p:column rendered="${controller.optionsModel.isControlColumn}"
                                   style="width: 10%">
                             <p:commandLink id="detailsDialogLink"
                                            immediate="true"
@@ -93,17 +93,17 @@
                                            title="Details Dialog"
                                            update="detailsTodo detailsDateCreated detailsDateModified">
                                 <f:setPropertyActionListener value="#{todo}"
-                                                             target="#{model.selectedTodo}" />
+                                                             target="#{controller.selectedTodo}" />
                             </p:commandLink>
 
                             <p:commandLink id="todoListDelete"
-                                           action="#{model.doDelete()}"
+                                           action="index"
                                            immediate="true"
                                            styleClass="ui-icon ui-icon-trash"
                                            title="Delete"
                                            update="todoForm:todoList todoForm:todoCell">
                                 <p:collector value="#{todo}"
-                                             removeFrom="#{model.todoList}" />
+                                             removeFrom="#{controller.model.todoList}" />
                             </p:commandLink>
 
                             <p:rowEditor>
@@ -114,7 +114,7 @@
                         <!-- COLUMN :: DATE CREATED -->
                         <p:column filterBy="#{todo.dateCreated}"
                                   headerText="Date Created"
-                                  rendered="${options.isShowDates}"
+                                  rendered="${controller.optionsModel.isShowDates}"
                                   sortBy="#{todo.dateCreated}">
                             <h:outputText value="#{todo.dateCreated}">
                                 <f:convertDateTime pattern="EEE, MMM d, yyyy (h:mm a)"
@@ -126,7 +126,7 @@
                         <!-- COLUMN :: DATE MODIFIED -->
                         <p:column filterBy="#{todo.dateModified}"
                                   headerText="Last Date Modified"
-                                  rendered="${options.isShowDates}"
+                                  rendered="${controller.optionsModel.isShowDates}"
                                   sortBy="#{todo.dateModified}">
                             <h:outputText value="#{todo.dateModified}">
                                 <f:convertDateTime pattern="EEE, MMM d, yyyy (h:mm a)"
@@ -155,7 +155,7 @@
                         <!-- FOOTER :: NUMBER OF TODOs -->
                         <f:facet name="footer">
                             <h:outputLabel value="Number of Todos: " />
-                            <h:outputText value="${model.numberOfTodos}" />
+                            <h:outputText value="${controller.model.numberOfTodos}" />
                         </f:facet>
                     </p:dataTable>
                 </h:form>
@@ -170,7 +170,7 @@
                             <h:outputLabel for="showDates"
                                            value="Show Dates" />
                             <h:selectBooleanCheckbox id="showDates"
-                                                     value="#{options.isShowDates}">
+                                                     value="#{controller.optionsModel.isShowDates}">
                                 <p:ajax update="todoForm:todoList" />
                             </h:selectBooleanCheckbox>
                         </p:outputPanel>
@@ -183,6 +183,11 @@
             </p:tab>
 
             <p:tab id="featuresTab" title="Features">
+                <h3>Object-Oriented Design Patterns</h3>
+                <ul>
+                    <li>Accessor / Mutator (i.e. Get / Set)</li>
+                    <li>Model-View-Controller (MVC)</li>
+                </ul>
                 <h3>Behaviour</h3>
                 <ul>
                     <li>CRUDS:</li>
@@ -230,13 +235,13 @@
                          width="100%">
                 <h:outputLabel value="Todo:" />
                 <h:outputText id="detailsTodo"
-                              value="${model.selectedTodo.todo}" />
+                              value="${controller.selectedTodo.todo}" />
                 <h:outputLabel value="Date Created:" />
                 <h:outputText id="detailsDateCreated"
-                              value="${model.selectedTodo.dateCreated}" />
+                              value="${controller.selectedTodo.dateCreated}" />
                 <h:outputLabel value="Date Modified:" />
                 <h:outputText id="detailsDateModified"
-                              value="${model.selectedTodo.dateModified}" />
+                              value="${controller.selectedTodo.dateModified}" />
             </h:panelGrid>
             <h:form>
                 <p:commandButton oncomplete="detailsDialog.hide();"

@@ -15,14 +15,14 @@ public class Todo implements Serializable {
     private Date   dateCreated;
     private Date   dateModified;
     private String todo;
-    
+
     private Todo() { }
 
     public Todo(String todo) {
         super();
-        
+
         this.todo = todo;
-        
+
         this.dateCreated = this.dateModified = new Date();
     }
 
@@ -40,7 +40,7 @@ public class Todo implements Serializable {
 
     public void setTodo(String todo) {
         this.todo = todo;
-        
+
         this.dateModified = new Date();
     }
 

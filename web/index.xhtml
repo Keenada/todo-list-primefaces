@@ -19,41 +19,40 @@
         <p:tabView>
 
             <p:tab id="todosTabs" title="Todo CRUDS">
-                <h:form id="todoForm">
-
+                <h:form id="newTodoForm">
                     <!-- PANEL :: ADD NEW TODO -->
                     <p:panel id="newTodoPanel"
                              header="New Todo">
-                        <h:panelGrid columns="4">
+                        <h:panelGrid columns="3">
                             <h:outputLabel for="newTodoText"
                                            value="New Todo:" />
                             <h:inputText id="newTodoText"
                                          binding="#{controller.newTodoText}"
-                                         immediate="true"
-                                         required="true" />
-
-                            <p:commandButton actionListener="#{controller.handleNewTodo}"
-                                             immediate="true"
-                                             value="Add Todo"
-                                             update="todoForm todoForm:todoList todoForm:newTodoText" />
-
+                                         required="true"
+                                         valueChangeListener="#{controller.handleNewTodo}" />
                             <p:message for="newTodoText" />
                         </h:panelGrid>
+                        <br />
+                        <p:commandButton actionListener="#{controller.handleNewTodo}"
+                                         value="Add Todo"
+                                         update="newTodoText todoForm:todoList" />
                     </p:panel>
+                </h:form>
 
-                    <p />
+                <p />
 
+                <h:form id="todoForm">
                     <!-- TABLE OF TODOs -->
                     <p:dataTable id="todoList"
                                  emptyMessage="Nothing Todo!!!"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport}
-                                    {FirstPageLink}
-                                    {PreviousPageLink}
-                                    {PageLinks}
-                                    {NextPageLink}
-                                    {LastPageLink}
-                                    {RowsPerPageDropdown}"
+                                 {FirstPageLink}
+                                 {PreviousPageLink}
+                                 {PageLinks}
+                                 {NextPageLink}
+                                 {LastPageLink}
+                                 {RowsPerPageDropdown}"
                                  rows="5"
                                  rowsPerPageTemplate="5,10,15"
                                  selection="#{controller.selectedTodo}"
@@ -83,34 +82,6 @@
                             </p:outputPanel>
                         </f:facet>
 
-                        <!-- COLUMN :: CONTROL -->
-                        <p:column rendered="${controller.optionsModel.isControlColumn}"
-                                  style="width: 10%">
-                            <p:commandLink id="detailsDialogLink"
-                                           immediate="true"
-                                           oncomplete="detailsDialog.show();"
-                                           styleClass="ui-icon ui-icon-search"
-                                           title="Details Dialog"
-                                           update="detailsTodo detailsDateCreated detailsDateModified">
-                                <f:setPropertyActionListener value="#{todo}"
-                                                             target="#{controller.selectedTodo}" />
-                            </p:commandLink>
-
-                            <p:commandLink id="todoListDelete"
-                                           action="index"
-                                           immediate="true"
-                                           styleClass="ui-icon ui-icon-trash"
-                                           title="Delete"
-                                           update="todoForm:todoList todoForm:todoCell">
-                                <p:collector value="#{todo}"
-                                             removeFrom="#{controller.model.todoList}" />
-                            </p:commandLink>
-
-                            <p:rowEditor>
-                                <p:tooltip value="Edit" />
-                            </p:rowEditor>
-                        </p:column>
-
                         <!-- COLUMN :: DATE CREATED -->
                         <p:column filterBy="#{todo.dateCreated}"
                                   headerText="Date Created"
@@ -138,7 +109,8 @@
                         <!-- COLUMN :: TODO -->
                         <p:column filterBy="#{todo.todo}"
                                   headerText="Todo"
-                                  sortBy="#{todo.todo}">
+                                  sortBy="#{todo.todo}"
+                                  sortFunction="#{controller.compareTodos}">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputText value="${todo.todo}" />
@@ -150,6 +122,35 @@
                                     </p:inputText>
                                 </f:facet>
                             </p:cellEditor>
+                        </p:column>
+
+                        <!-- COLUMN :: CONTROL -->
+                        <p:column rendered="${controller.optionsModel.isControlColumn}"
+                                  style="width: 20%">
+                            <p:column>
+                                <p:rowEditor>
+                                    <p:tooltip value="Edit" />
+                                </p:rowEditor>
+                            </p:column>
+
+                            <p:commandLink id="detailsDialogLink"
+                                           immediate="true"
+                                           oncomplete="detailsDialog.show();"
+                                           styleClass="ui-icon ui-icon-search"
+                                           title="Details Dialog"
+                                           update="detailsTodo detailsDateCreated detailsDateModified">
+                                <f:setPropertyActionListener value="#{todo}"
+                                                             target="#{controller.selectedTodo}" />
+                            </p:commandLink>
+                            <p:commandLink id="todoListDelete"
+                                           action="index"
+                                           immediate="true"
+                                           styleClass="ui-icon ui-icon-trash"
+                                           title="Delete"
+                                           update="todoForm:todoList">
+                                <p:collector value="#{todo}"
+                                             removeFrom="#{controller.model.todoList}" />
+                            </p:commandLink>
                         </p:column>
 
                         <!-- FOOTER :: NUMBER OF TODOs -->
@@ -190,6 +191,7 @@
                 </ul>
                 <h3>Behaviour</h3>
                 <ul>
+                    <li>binding of a view component to controller</li>
                     <li>CRUDS:</li>
                     <ul>
                         <li><b>C</b>reate a new todo</li>
@@ -201,9 +203,15 @@
                     <li>column filtering</li>
                     <li>column formatting</li>
                     <li>column sorting</li>
+                    <ul>
+                        <li>use of a comparator to sort todos ignoring case</li>
+                    </ul>
                     <li>dynamic columns</li>
+                    <li>footer displaying number of todos</li>
                     <li>global searching</li>
-                    <li>dataTable pagination</li>
+                    <li>multiple components registered to the same event handler</li>
+                    <li>options page</li>
+                    <li>pagination</li>
                     <li>targeted updates</li>
                     <li>use of immediate attribute: p:commandButton to
                         toggle control column</li>

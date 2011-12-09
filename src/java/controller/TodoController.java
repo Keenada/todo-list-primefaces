@@ -1,5 +1,6 @@
 package controller;
 
+import com.sun.xml.internal.ws.message.saaj.SAAJHeader;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -36,6 +37,10 @@ public class TodoController implements Serializable {
         selectedTodo = null;
     }
 
+    public int compareTodos( Object todo1, Object todo2 ) {
+        return todo1.toString().compareToIgnoreCase( todo2.toString() );
+    }
+
     public String doToggleControlColumn() {
         optionsModel.toggleControlColumn();
 
@@ -58,7 +63,7 @@ public class TodoController implements Serializable {
         return selectedTodo;
     }
 
-    public void handleNewTodo( ActionEvent e ) {
+    public void handleNewTodo() {
 
         if ( newTodoText.getValue() == null )
             return;

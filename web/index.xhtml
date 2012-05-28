@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
         <!-- TODO :: You will replace this static text title with a message bundle. -->
@@ -16,9 +16,35 @@
     </h:head>
 
     <h:body>
-        <p:tabView>
+        <!-- DETAILS DIALOG -->
+        <p:dialog header="Details Dialog"
+                  hideEffect="explode"
+                  modal="true"
+                  showEffect="fade"
+                  width="500"
+                  widgetVar="detailsDialog">
+            <h:panelGrid id="todoDetails"
+                         cellpadding="4"
+                         columns="2"
+                         width="100%">
+                <h:outputLabel value="Todo:" />
+                <h:outputText id="detailsTodo"
+                              value="${controller.selectedTodo.todo}" />
+                <h:outputLabel value="Date Created:" />
+                <h:outputText id="detailsDateCreated"
+                              value="${controller.selectedTodo.dateCreated}" />
+                <h:outputLabel value="Date Modified:" />
+                <h:outputText id="detailsDateModified"
+                              value="${controller.selectedTodo.dateModified}" />
+                <h:form>
+                    <p:commandButton oncomplete="detailsDialog.hide();"
+                                     value="OK" />
+                </h:form>
+            </h:panelGrid>
+        </p:dialog>
 
-            <p:tab id="todosTabs" title="Todo CRUDS">
+        <p:tabView id="todoTabs">
+            <p:tab id="todoCRUDS" title="Todo CRUDS">
                 <h:form id="newTodoForm">
                     <!-- PANEL :: ADD NEW TODO -->
                     <p:panel id="newTodoPanel"
@@ -35,7 +61,7 @@
                         <br />
                         <p:commandButton actionListener="#{controller.handleNewTodo}"
                                          value="Add Todo"
-                                         update="newTodoText todoForm:todoList" />
+                                         update=":todoTabs:newTodoForm:newTodoText :todoTabs:todoForm:todoList" />
                     </p:panel>
                 </h:form>
 
@@ -44,6 +70,7 @@
                 <h:form id="todoForm">
                     <!-- TABLE OF TODOs -->
                     <p:dataTable id="todoList"
+                                 editable="true"
                                  emptyMessage="Nothing Todo!!!"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport}
@@ -53,6 +80,7 @@
                                  {NextPageLink}
                                  {LastPageLink}
                                  {RowsPerPageDropdown}"
+                                 rowKey="${todo.todoID}}"
                                  rows="5"
                                  rowsPerPageTemplate="5,10,15"
                                  selection="#{controller.selectedTodo}"
@@ -76,9 +104,9 @@
                             <!-- TOGGLE CONTROL COLUMN -->
                             <p:outputPanel>
                                 <p:commandButton action="#{controller.doToggleControlColumn()}"
+                                                 icon="ui-icon ui-icon-gear"
                                                  immediate="true"
-                                                 image="ui-icon ui-icon-gear"
-                                                 update="todoForm:todoList" />
+                                                 update=":todoTabs:todoForm:todoList" />
                             </p:outputPanel>
                         </f:facet>
 
@@ -126,28 +154,27 @@
 
                         <!-- COLUMN :: CONTROL -->
                         <p:column rendered="${controller.optionsModel.isControlColumn}"
-                                  style="width: 20%">
-                            <p:column>
-                                <p:rowEditor>
-                                    <p:tooltip value="Edit" />
-                                </p:rowEditor>
-                            </p:column>
-
+                                  colspan="3"
+                                  style="width: 25%">
+                            <p:rowEditor id="todoUpdate">
+                                <p:tooltip for="todoUpdate"
+                                           value="Edit" />
+                            </p:rowEditor>
+                                
                             <p:commandLink id="detailsDialogLink"
-                                           immediate="true"
                                            oncomplete="detailsDialog.show();"
                                            styleClass="ui-icon ui-icon-search"
                                            title="Details Dialog"
-                                           update="detailsTodo detailsDateCreated detailsDateModified">
+                                           update=":detailsTodo :detailsDateCreated :detailsDateModified">
                                 <f:setPropertyActionListener value="#{todo}"
                                                              target="#{controller.selectedTodo}" />
                             </p:commandLink>
+                                    
                             <p:commandLink id="todoListDelete"
-                                           action="index"
-                                           immediate="true"
+                                           ajax="false"
                                            styleClass="ui-icon ui-icon-trash"
                                            title="Delete"
-                                           update="todoForm:todoList">
+                                           update=":todoTabs:todoForm:todoList">
                                 <p:collector value="#{todo}"
                                              removeFrom="#{controller.model.todoList}" />
                             </p:commandLink>
@@ -172,7 +199,7 @@
                                            value="Show Dates" />
                             <h:selectBooleanCheckbox id="showDates"
                                                      value="#{controller.optionsModel.isShowDates}">
-                                <p:ajax update="todoForm:todoList" />
+                                <p:ajax update=":todoTabs:todoForm:todoList" />
                             </h:selectBooleanCheckbox>
                         </p:outputPanel>
                     </h:panelGrid>
@@ -213,8 +240,6 @@
                     <li>options page</li>
                     <li>pagination</li>
                     <li>targeted updates</li>
-                    <li>use of immediate attribute: p:commandButton to
-                        toggle control column</li>
                 </ul>
                 <h3>PrimeFaces Components</h3>
                 <ul>
@@ -229,32 +254,5 @@
                 </ul>
             </p:tab>
         </p:tabView>
-
-        <!-- DETAILS DIALOG -->
-        <p:dialog header="Details Dialog"
-                  hideEffect="blink"
-                  modal="true"
-                  showEffect="blink"
-                  width="500"
-                  widgetVar="detailsDialog">
-            <h:panelGrid id="todoDetails"
-                         cellpadding="4"
-                         columns="2"
-                         width="100%">
-                <h:outputLabel value="Todo:" />
-                <h:outputText id="detailsTodo"
-                              value="${controller.selectedTodo.todo}" />
-                <h:outputLabel value="Date Created:" />
-                <h:outputText id="detailsDateCreated"
-                              value="${controller.selectedTodo.dateCreated}" />
-                <h:outputLabel value="Date Modified:" />
-                <h:outputText id="detailsDateModified"
-                              value="${controller.selectedTodo.dateModified}" />
-            </h:panelGrid>
-            <h:form>
-                <p:commandButton oncomplete="detailsDialog.hide();"
-                                 value="OK" />
-            </h:form>
-        </p:dialog>
     </h:body>
 </html>

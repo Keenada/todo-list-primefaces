@@ -1,14 +1,12 @@
 package controller;
 
-import com.sun.xml.internal.ws.message.saaj.SAAJHeader;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIInput;
-import javax.faces.event.ActionEvent;
-import model.OptionsModel;
-import model.Todo;
-import model.TodoListModel;
+import models.OptionsModel;
+import models.Todo;
+import models.TodoListModel;
 
 /**
  * Controller for a todo list.
@@ -44,7 +42,7 @@ public class TodoController implements Serializable {
     public String doToggleControlColumn() {
         optionsModel.toggleControlColumn();
 
-        return null;
+        return "index";
     }
 
     public TodoListModel getModel() {

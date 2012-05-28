@@ -1,14 +1,21 @@
-package model;
+package models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import javax.faces.model.ListDataModel;
+import org.primefaces.model.SelectableDataModel;
 
 /**
  * Model a todo list.
  *
+ * Reference:
+ *  http://www.primefaces.org/showcase/ui/datatableRowSelectionRadioCheckbox.jsf
+ *
  * @author Gerald.Hurdle@AlgonquinCollege.com
  */
-public class TodoListModel implements Serializable {
+public class TodoListModel extends ListDataModel<Todo>
+                           implements SelectableDataModel<Todo>, Serializable {
     // TODO :: use plugin to generate
     private static final long serialVersionUID = 2764660107984440385L;
 
@@ -36,7 +43,24 @@ public class TodoListModel implements Serializable {
         return todoList.size();
     }
 
-    public ArrayList<Todo> getTodoList() {
+    @Override
+    public Todo getRowData(String rowKey) {
+        List<Todo> todos = (List<Todo>) getWrappedData();
+
+        for(Todo todo : todos) {
+            if(todo.getTodo().equals(rowKey))
+                return todo;
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object getRowKey(Todo object) {
+        return object.getTodo();
+    }
+
+    public List<Todo> getTodoList() {
         return todoList;
     }
 }

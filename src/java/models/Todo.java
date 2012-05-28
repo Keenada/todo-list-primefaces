@@ -1,4 +1,4 @@
-package model;
+package models;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,15 +11,25 @@ import java.util.Date;
 public class Todo implements Serializable {
     // TODO :: use plugin to generate
     private static final long serialVersionUID = -2223642102698573238L;
+    
+    private static int INCREMENT_SEED;
 
-    private Date   dateCreated;
-    private Date   dateModified;
-    private String todo;
+    private Date    dateCreated;
+    private Date    dateModified;
+    private String  todo;
+    private Integer todoID;
+    
+    static {
+        INCREMENT_SEED = 1;
+    }
 
     private Todo() { }
 
     public Todo(String todo) {
         super();
+
+        this.todoID = INCREMENT_SEED;
+        INCREMENT_SEED++;
 
         this.todo = todo;
 
@@ -36,6 +46,10 @@ public class Todo implements Serializable {
 
     public String getTodo() {
         return todo;
+    }
+
+    public Integer getTodoID() {
+        return todoID;
     }
 
     public void setTodo(String todo) {
